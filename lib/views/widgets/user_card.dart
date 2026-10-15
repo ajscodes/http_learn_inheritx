@@ -21,7 +21,6 @@ class UserCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Chip(
-                  avatar: const Icon(Icons.person, size: 16, color: Colors.blue),
                   label: Text('User ID: ${apiData.userId}'),
                   backgroundColor: Colors.blue.withValues(alpha: 0.1),
                 ),
@@ -29,9 +28,10 @@ class UserCard extends StatelessWidget {
                   label: Text('Post ID: ${apiData.id}'),
                   backgroundColor: Colors.amber.withValues(alpha: 0.1),
                 ),
+                IconButton(onPressed: (){}, icon: Icon(Icons.delete), color: Colors.red,)
               ],
             ),
-            SizedBox(height: 12,),
+            SizedBox(height: 12),
             Text(
               apiData.title,
               maxLines: 2,

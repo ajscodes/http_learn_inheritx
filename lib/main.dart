@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:networking_learn/models/api_model.dart';
 import 'package:networking_learn/views/fetch_with_http.dart';
-import 'package:networking_learn/views/widgets/user_card.dart';
 
 void main() {
   runApp(const MyApp());
