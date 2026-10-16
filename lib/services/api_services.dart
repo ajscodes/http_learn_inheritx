@@ -75,8 +75,14 @@ class ApiServices {
   //region UPDATE
   Future<ApiModel> updateData(ApiModel model) async {
     try {
+      final Map<String, dynamic> body = {
+        'userId': model.userId,
+        'title' : model.title,
+        'body' : model.body
+      };
+
       final response = await http.put(
-        Uri.parse(UrlConstants.baseUrl),
+        Uri.parse('${UrlConstants.baseUrl}/${model.id}'),
         headers: {'Content-Type': 'application/json; charset=UTF-8'},
         body: jsonEncode(model.toJson()),
       );
