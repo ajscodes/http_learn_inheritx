@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:js_interop';
 
 import 'package:networking_learn/models/api_model.dart';
 import 'package:http/http.dart' as http;
@@ -80,6 +79,7 @@ class ApiServices {
         'title' : model.title,
         'body' : model.body
       };
+
 
       final response = await http.put(
         Uri.parse('${UrlConstants.baseUrl}/${model.id}'),
