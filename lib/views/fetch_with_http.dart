@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:networking_learn/models/api_model.dart';
 import 'package:networking_learn/services/api_services.dart';
+import 'package:networking_learn/views/add_edit_card.dart';
 import 'package:networking_learn/views/widgets/user_card.dart';
 
 class FetchWithHttp extends StatefulWidget {
@@ -97,39 +98,45 @@ class _FetchWithHttpState extends State<FetchWithHttp> {
                       },
                     ),
                   ),
-                  _findByIdController.text.isNotEmpty ? ElevatedButton(
-                    onPressed: () {
-                      _checkValidate();
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Colors.blue),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                  _findByIdController.text.isNotEmpty
+                      ? ElevatedButton(
+                          onPressed: () {
+                            _checkValidate();
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(
+                              Colors.blue,
+                            ),
+                            shape: WidgetStatePropertyAll(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'Get',
+                            style: TextStyle(color: Colors.white, fontSize: 15),
+                          ),
+                        )
+                      : ElevatedButton(
+                          onPressed: () {
+                            apiCall();
+                          },
+                          style: ButtonStyle(
+                            backgroundColor: WidgetStatePropertyAll(
+                              Colors.blue,
+                            ),
+                            shape: WidgetStatePropertyAll(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
+                          ),
+                          child: Text(
+                            'All',
+                            style: TextStyle(color: Colors.white, fontSize: 15),
+                          ),
                         ),
-                      ),
-                    ),
-                    child: Text(
-                      'Get',
-                      style: TextStyle(color: Colors.white, fontSize: 15),
-                    ),
-                  ) : ElevatedButton(
-                    onPressed: () {
-                      apiCall();
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(Colors.blue),
-                      shape: WidgetStatePropertyAll(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    child: Text(
-                      'All',
-                      style: TextStyle(color: Colors.white, fontSize: 15),
-                    ),
-                  ),
                 ],
               ),
             ),
@@ -141,7 +148,12 @@ class _FetchWithHttpState extends State<FetchWithHttp> {
                     : ListView.builder(
                         itemBuilder: (context, index) {
                           final item = apiDataList[index];
-                          return UserCard(apiData: item);
+                          return UserCard(
+                            apiData: item,
+                            onDelete: () {
+                              deleteById(item.id);
+                            },
+                          );
                         },
                         itemCount: apiDataList.length,
                       ),
@@ -150,9 +162,26 @@ class _FetchWithHttpState extends State<FetchWithHttp> {
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final ApiModel? newCard = await
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => AddEditCard()),
+          );
+
+          if(newCard != null && mounted){
+            await createData(newCard);
+          }
+
+        },
+        backgroundColor: Colors.blue,
+        child: Icon(Icons.add, color: Colors.white),
+      ),
     );
   }
 
+  //region GET ALL
   Future<void> apiCall() async {
     setState(() {
       isLoading = true;
@@ -165,7 +194,7 @@ class _FetchWithHttpState extends State<FetchWithHttp> {
         apiDataList = res;
       });
     } catch (e) {
-      print('Api data is empty or error : $e');
+      print('(UI) API DATA IS EMPTY OR ERROR : $e');
     } finally {
       setState(() {
         isLoading = false;
@@ -173,6 +202,9 @@ class _FetchWithHttpState extends State<FetchWithHttp> {
     }
   }
 
+  //endregion
+
+  //region GetById
   Future<void> fetchById(int id) async {
     setState(() {
       isLoading = true;
@@ -185,7 +217,7 @@ class _FetchWithHttpState extends State<FetchWithHttp> {
         apiDataList = [res];
       });
     } catch (e) {
-      print('Api data for Id $id not found.');
+      print('(UI) API DATA FOR ID $id NOT FOUND.');
       setState(() {
         apiDataList = [];
       });
@@ -195,12 +227,47 @@ class _FetchWithHttpState extends State<FetchWithHttp> {
       });
     }
   }
+  //endregion
 
-  Future<void> deleteById(int id) async {
+  //region DeleteById
+  Future<void> deleteById(String id) async {
     setState(() {
       isLoading = true;
     });
 
-
+    try {
+      await apiServices.deleteData(id);
+      setState(() {
+        apiDataList.removeWhere((item) => item.id == id);
+      });
+    } catch (e) {
+      print('(UI) API DATA FOR ID $id NOT DELETED.');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
   }
+  //endregion
+
+  //region Create
+  Future<void> createData(ApiModel model) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try{
+      ApiModel res = await apiServices.addData(model);
+      setState(() {
+        apiDataList.add(res);
+      });
+    } catch (e){
+      print('(UI) DATA CREATED.');
+    } finally {
+      setState(() {
+        isLoading = false;
+      });
+    }
+  }
+  //endregion
 }
