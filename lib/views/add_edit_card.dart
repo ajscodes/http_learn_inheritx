@@ -23,7 +23,6 @@ class _AddEditCardState extends State<AddEditCard> {
     if (_formKey.currentState!.validate()) {
       final updatedCard = ApiModel(
           userId: int.parse(_userIdController.text.trim()),
-          id: widget.editCard?.id.toString() ?? DateTime.now().microsecondsSinceEpoch.toString().toString().substring(0,4),
           title: _titleController.text.trim(),
           body: _bodyController.text.trim()
       );

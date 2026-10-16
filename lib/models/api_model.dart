@@ -1,12 +1,12 @@
 class ApiModel {
   final int userId;
-  final String id;
+  final String? id;
   final String title;
   final String body;
 
   ApiModel({
     required this.userId,
-    required this.id,
+    this.id,
     required this.title,
     required this.body,
   });
@@ -23,7 +23,6 @@ class ApiModel {
   Map<String, dynamic> toJson() {
     return {
       'userId' : userId,
-      'id' : id,
       'title' : title,
       'body' : body
     };

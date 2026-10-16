@@ -151,7 +151,7 @@ class _FetchWithHttpState extends State<FetchWithHttp> {
                           return UserCard(
                             apiData: item,
                             onDelete: () {
-                              deleteById(item.id);
+                              deleteById(item.id!);
                             },
                           );
                         },
@@ -270,4 +270,14 @@ class _FetchWithHttpState extends State<FetchWithHttp> {
     }
   }
   //endregion
+
+  Future<void> updateData(ApiModel model) async {
+    setState(() {
+      isLoading = true;
+    });
+
+    try{
+
+    }
+  }
 }

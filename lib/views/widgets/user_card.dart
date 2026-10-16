@@ -60,6 +60,7 @@ class UserCard extends StatelessWidget {
               SizedBox(height: 8),
               Text(
                 apiData.body,
+                overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontSize: 14,
                   color: Colors.grey[700],
